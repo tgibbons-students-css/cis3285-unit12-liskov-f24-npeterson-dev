@@ -1,16 +1,21 @@
 ﻿using SubtypeCovariance;
 
-class Program
+namespace SubtypeCovariance
 {
-    static void Main(string[] args)
+    class Program
     {
+        static void Main(string[] args)
+        {
+            IEntityRepository<User> userRepository = new UserRepository();
 
-        EntityRepository entityRepository = new EntityRepository();
-        Entity myEntity = entityRepository.GetByID(Guid.NewGuid());
+            User newUser = new User();
+            userRepository.Add(newUser);
 
-        myEntity.Name = "Tom";
-        Console.WriteLine("New entity ID: " + myEntity.ID.ToString());
-        Console.WriteLine("New entity Name: " + myEntity.Name);
+            User user = userRepository.GetByID(newUser.ID);
+            user.EmailAddress = "example@example.com";
+            user.DateOfBirth = new DateTime(1990, 1, 1);
 
+            Console.WriteLine($"User  ID: {user.ID}, Email: {user.EmailAddress}, Date of Birth: {user.DateOfBirth.ToShortDateString()}");
+        }
     }
 }

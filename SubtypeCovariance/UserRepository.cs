@@ -6,12 +6,35 @@ using System.Threading.Tasks;
 
 namespace SubtypeCovariance
 {
-    public class UserRepository : EntityRepository
+    public class UserRepository : IEntityRepository<User>
     {
-        //public override Entity GetByID(Guid id)
-        public override User GetByID(Guid id)
+        private readonly Dictionary<Guid, User> _users = new Dictionary<Guid, User>();
+
+        public User GetByID(Guid id)
         {
-            return new User(id);
+            _users.TryGetValue(id, out var user);
+            return user;
+        }
+
+        public void Add(User entity)
+        {
+            if (!_users.ContainsKey(entity.ID))
+            {
+                _users[entity.ID] = entity;
+            }
+        }
+
+        public void Update(User entity)
+        {
+            if (_users.ContainsKey(entity.ID))
+            {
+                _users[entity.ID] = entity;
+            }
+        }
+
+        public void Delete(Guid id)
+        {
+            _users.Remove(id);
         }
     }
 }

@@ -6,13 +6,36 @@ using System.Threading.Tasks;
 
 namespace SubtypeCovariance
 {
-    public class EntityRepository : IEntityRepository<Entity>
+    public abstract class EntityRepository<TEntity> : IEntityRepository<TEntity>
+            where TEntity : Entity
     {
+        protected readonly Dictionary<Guid, TEntity> _entities = new Dictionary<Guid, TEntity>();
 
-        // **** This method should generate an error which you need to fix ****
-        public virtual Entity GetByID(Guid id)
+        public TEntity GetByID(Guid id)
         {
-            return new Entity(id);
+            _entities.TryGetValue(id, out var entity);
+            return entity;
+        }
+
+        public void Add(TEntity entity)
+        {
+            if (!_entities.ContainsKey(entity.ID))
+            {
+                _entities[entity.ID] = entity;
+            }
+        }
+
+        public void Update(TEntity entity)
+        {
+            if (_entities.ContainsKey(entity.ID))
+            {
+                _entities[entity.ID] = entity;
+            }
+        }
+
+        public void Delete(Guid id)
+        {
+            _entities.Remove(id);
         }
     }
 }

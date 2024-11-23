@@ -10,5 +10,8 @@ namespace SubtypeCovariance
         where TEntity : Entity
     {
         TEntity GetByID(Guid id);
+        void Add(TEntity entity);
+        void Update(TEntity entity);
+        void Delete(Guid id);
     }
 }
